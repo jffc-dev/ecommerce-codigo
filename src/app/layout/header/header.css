@@ -1,0 +1,4 @@
+.search-halo {
+  border: 2px solid var(--color-ink);
+  box-shadow: 0 0 0 12px var(--color-soft-cloud);
+}

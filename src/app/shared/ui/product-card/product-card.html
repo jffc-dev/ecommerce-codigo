@@ -1,0 +1,29 @@
+<button type="button" class="group block w-full text-left text-ink" (click)="open()">
+  <div class="relative flex aspect-square items-center justify-center bg-soft-cloud">
+    @if (isNew()) {
+      <div class="absolute left-sm top-sm">
+        <app-badge label="Just In" />
+      </div>
+    }
+    <img [src]="product().image" [alt]="product().title" class="h-[70%] w-[70%] object-contain" loading="lazy" />
+  </div>
+
+  <div class="mt-sm flex items-center gap-xs">
+    @for (color of swatches(); track color) {
+      <app-swatch-dot [color]="color" />
+    }
+  </div>
+
+  <p class="mt-sm line-clamp-2 text-body-strong font-medium">{{ product().title }}</p>
+  <p class="mt-xxs text-caption capitalize text-mute">{{ product().category }}</p>
+
+  <div class="mt-sm flex items-center gap-sm">
+    @if (onSale()) {
+      <span class="text-body-strong font-medium text-sale">{{ price() | currency }}</span>
+      <span class="text-caption text-mute line-through">{{ product().price | currency }}</span>
+      <span class="text-caption-sm font-medium text-sale">-{{ discountPercent }}%</span>
+    } @else {
+      <span class="text-body-strong font-medium text-ink">{{ price() | currency }}</span>
+    }
+  </div>
+</button>

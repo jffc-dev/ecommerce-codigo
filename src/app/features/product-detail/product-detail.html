@@ -1,0 +1,88 @@
+@if (product(); as product) {
+  <div class="grid grid-cols-1 gap-xl px-lg py-xl md:grid-cols-2 md:px-xl">
+    <!-- image -->
+    <div class="relative flex aspect-square items-center justify-center bg-soft-cloud">
+      <div class="absolute left-md top-md">
+        <app-icon-button ariaLabel="Volver" (pressed)="goBack()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </app-icon-button>
+      </div>
+      <img [src]="product.image" [alt]="product.title" class="h-[65%] w-[65%] object-contain" />
+    </div>
+
+    <!-- info -->
+    <div>
+      <p class="text-caption capitalize text-mute">{{ product.category }}</p>
+      <h1 class="mt-xxs text-heading-xl font-medium">{{ product.title }}</h1>
+
+      <div class="mt-md flex items-center gap-sm">
+        @if (onSale()) {
+          <span class="text-heading-lg font-medium text-sale">{{ price() | currency }}</span>
+          <span class="text-body text-mute line-through">{{ product.price | currency }}</span>
+          <span class="text-caption-sm font-medium text-sale">-{{ discountPercent }}%</span>
+        } @else {
+          <span class="text-heading-lg font-medium">{{ price() | currency }}</span>
+        }
+      </div>
+
+      <p class="mt-lg text-body text-charcoal">{{ product.description }}</p>
+
+      <div class="mt-xl">
+        <h3 class="text-body-strong font-medium">Color</h3>
+        <div class="mt-sm">
+          <app-color-swatch-picker [colors]="swatches()" [(selected)]="selectedColor" />
+        </div>
+      </div>
+
+      <div class="mt-xl">
+        <h3 class="text-body-strong font-medium">Talla</h3>
+        <div class="mt-sm flex flex-wrap gap-sm">
+          @for (size of sizes; track size) {
+            <app-filter-chip [label]="size" [active]="selectedSize() === size" (activeChange)="selectSize(size)" />
+          }
+        </div>
+      </div>
+
+      <div class="mt-xl flex items-center gap-lg">
+        <app-quantity-stepper [(value)]="quantity" [min]="1" [max]="10" />
+        <app-button [fullWidth]="true" (pressed)="addToBag()">
+          {{ addedToBag() ? 'Agregado ✓' : 'Agregar a la Bolsa' }}
+        </app-button>
+      </div>
+
+      <div class="mt-xxl border-t border-hairline">
+        @for (row of disclosureRows; track row.key) {
+          <div class="border-b border-hairline py-xl">
+            <button
+              type="button"
+              class="flex w-full items-center justify-between text-left text-body-strong font-medium"
+              (click)="toggleRow(row.key)"
+            >
+              {{ row.label }}
+              <span>{{ expandedRow() === row.key ? '−' : '+' }}</span>
+            </button>
+            @if (expandedRow() === row.key) {
+              <div class="mt-md text-body text-charcoal">
+                @switch (row.key) {
+                  @case ('details') {
+                    <p>{{ product.description }}</p>
+                  }
+                  @case ('shipping') {
+                    <p>Envío estándar gratis en pedidos mayores a $50. Devoluciones gratuitas dentro de 30 días.</p>
+                  }
+                  @case ('reviews') {
+                    <p>{{ product.rating.rate }} / 5 · {{ product.rating.count }} reseñas</p>
+                  }
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="flex items-center justify-center py-section text-body text-mute">Cargando producto…</div>
+}

@@ -1,0 +1,25 @@
+<footer class="border-t border-hairline bg-canvas px-lg py-section-mobile md:px-xl md:py-section">
+  <div class="grid grid-cols-2 gap-xl md:grid-cols-4">
+    @for (column of columns; track column.title) {
+      <div>
+        <h3 class="text-body-strong font-medium text-ink">{{ column.title }}</h3>
+        <ul class="mt-lg flex flex-col gap-md">
+          @for (link of column.links; track link) {
+            <li class="text-caption text-mute">{{ link }}</li>
+          }
+        </ul>
+      </div>
+    }
+  </div>
+
+  <hr class="my-xl border-hairline" />
+
+  <div class="flex flex-col gap-sm text-utility text-mute md:flex-row md:items-center md:justify-between">
+    <span>&copy; {{ year }} STRIDE, Inc. Todos los derechos reservados.</span>
+    <div class="flex gap-lg">
+      <span>Términos de uso</span>
+      <span>Privacidad</span>
+      <span>Ley de cadena de suministro</span>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,102 @@
+<header class="sticky top-0 z-40 bg-canvas">
+  <!-- utility-bar -->
+  <div class="hidden h-9 items-center justify-end gap-lg bg-soft-cloud px-xl text-caption-sm text-ink md:flex">
+    <span>Encuentra una Tienda</span>
+    <span>Ayuda</span>
+    <span>Únete</span>
+    <span>Iniciar Sesión</span>
+  </div>
+
+  <!-- primary-nav -->
+  <div class="flex h-14 items-center justify-between border-b border-hairline-soft px-lg md:h-16 md:px-xl">
+    <div class="flex items-center gap-md">
+      <app-icon-button ariaLabel="Abrir menú" [transparent]="true" class="md:hidden" (pressed)="toggleMenu()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke-linecap="round" />
+        </svg>
+      </app-icon-button>
+      <button type="button" class="font-display text-3xl uppercase tracking-wide" (click)="nav.goHome()">
+        Stride
+      </button>
+    </div>
+
+    <nav class="hidden items-center gap-xl md:flex">
+      @for (link of navLinks; track link) {
+        <button
+          type="button"
+          class="py-sm text-body-strong font-medium"
+          [class.border-b-2]="nav.categoryFilter() === link"
+          [class.border-ink]="nav.categoryFilter() === link"
+          (click)="selectCategory(link)"
+        >
+          {{ link }}
+        </button>
+      }
+    </nav>
+
+    <div class="flex items-center gap-sm">
+      <div class="hidden items-center md:flex">
+        @if (isSearchOpen()) {
+          <div class="search-halo flex h-10 items-center gap-sm rounded-md bg-canvas px-lg">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" stroke-linecap="round" />
+            </svg>
+            <input
+              #searchInput
+              type="search"
+              placeholder="Buscar productos"
+              class="w-48 bg-transparent text-body outline-none placeholder:text-mute"
+              (input)="onSearchInput($any($event.target).value)"
+              (blur)="isSearchOpen.set(false)"
+            />
+          </div>
+        } @else {
+          <app-icon-button ariaLabel="Buscar" (pressed)="toggleSearch()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" stroke-linecap="round" />
+            </svg>
+          </app-icon-button>
+        }
+      </div>
+
+      <app-icon-button ariaLabel="Favoritos">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path
+            d="M12 21s-6.7-4.35-9.3-8.05C1 10.5 1.6 7 4.7 5.6 7 4.6 9.3 5.4 12 8c2.7-2.6 5-3.4 7.3-2.4 3.1 1.4 3.7 4.9 2 7.35C18.7 16.65 12 21 12 21Z"
+          />
+        </svg>
+      </app-icon-button>
+
+      <button
+        type="button"
+        class="relative inline-flex h-10 w-10 items-center justify-center rounded-full bg-soft-cloud"
+        (click)="nav.goToCart()"
+        aria-label="Ver bolsa"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 7h12l-1 13H7L6 7Z" stroke-linejoin="round" />
+          <path d="M9 7a3 3 0 0 1 6 0" stroke-linecap="round" />
+        </svg>
+        @if (cartCount() > 0) {
+          <span
+            class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-ink px-xxs text-[10px] font-medium text-on-primary"
+            >{{ cartCount() }}</span
+          >
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- mobile drawer -->
+  @if (isMenuOpen()) {
+    <nav class="flex flex-col gap-xl border-b border-hairline bg-canvas px-xl py-xl md:hidden">
+      @for (link of navLinks; track link) {
+        <button type="button" class="text-left text-heading-md font-medium" (click)="selectCategory(link)">
+          {{ link }}
+        </button>
+      }
+    </nav>
+  }
+</header>

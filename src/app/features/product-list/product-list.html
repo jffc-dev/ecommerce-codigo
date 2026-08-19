@@ -1,0 +1,73 @@
+<div class="px-lg py-xl md:px-xl">
+  <!-- sub-nav -->
+  <div class="flex flex-col gap-md border-b border-hairline-soft pb-lg md:flex-row md:items-center md:justify-between">
+    <p class="text-caption text-mute">
+      Inicio / Productos
+      @if (nav.categoryFilter()) {
+        / <span class="capitalize text-ink">{{ nav.categoryFilter() }}</span>
+      }
+    </p>
+
+    <div class="flex items-center gap-lg">
+      <app-icon-button ariaLabel="Mostrar u ocultar filtros" (pressed)="toggleFilters()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M7 12h10M10 18h4" stroke-linecap="round" />
+        </svg>
+      </app-icon-button>
+
+      <select
+        class="rounded-full border border-hairline bg-canvas px-lg py-sm text-button-sm font-medium"
+        [value]="sortBy()"
+        (change)="onSortChange($any($event.target).value)"
+      >
+        <option value="relevance">Relevancia</option>
+        <option value="price-asc">Precio: menor a mayor</option>
+        <option value="price-desc">Precio: mayor a menor</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="mt-xl flex gap-xl">
+    <!-- filter-sidebar -->
+    @if (showFilters()) {
+      <aside class="hidden w-55 flex-none md:block">
+        <h3 class="text-body-strong font-medium">Categorías</h3>
+        <div class="mt-lg flex flex-col items-start gap-sm">
+          @for (category of categories(); track category) {
+            <app-filter-chip
+              [label]="category"
+              class="capitalize"
+              [active]="nav.categoryFilter() === category"
+              (activeChange)="toggleCategory(category)"
+            />
+          }
+        </div>
+      </aside>
+    }
+
+    <div class="flex-1">
+      @if (loading()) {
+        <div class="grid grid-cols-2 gap-sm md:grid-cols-3">
+          @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+            <div class="aspect-square animate-pulse bg-soft-cloud"></div>
+          }
+        </div>
+      } @else if (error()) {
+        <div class="flex flex-col items-center gap-lg py-section-mobile text-center">
+          <p class="text-body-strong">{{ error() }}</p>
+          <button type="button" class="rounded-full bg-ink px-xl py-md text-button text-on-primary" (click)="retry()">
+            Reintentar
+          </button>
+        </div>
+      } @else if (filteredProducts().length === 0) {
+        <p class="py-section-mobile text-center text-body text-mute">No encontramos productos con esos filtros.</p>
+      } @else {
+        <div class="grid grid-cols-2 gap-sm md:grid-cols-3">
+          @for (product of filteredProducts(); track product.id) {
+            <app-product-card [product]="product" />
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

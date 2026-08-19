@@ -1,0 +1,21 @@
+<div class="inline-flex items-center gap-lg rounded-full bg-soft-cloud px-md py-sm">
+  <button
+    type="button"
+    class="flex h-6 w-6 items-center justify-center text-heading-md disabled:opacity-30"
+    [disabled]="value() <= min()"
+    (click)="decrement()"
+    aria-label="Disminuir cantidad"
+  >
+    &minus;
+  </button>
+  <span class="w-4 text-center text-button font-medium">{{ value() }}</span>
+  <button
+    type="button"
+    class="flex h-6 w-6 items-center justify-center text-heading-md disabled:opacity-30"
+    [disabled]="value() >= max()"
+    (click)="increment()"
+    aria-label="Aumentar cantidad"
+  >
+    +
+  </button>
+</div>

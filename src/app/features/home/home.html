@@ -1,0 +1,67 @@
+<div class="flex flex-col gap-section-mobile md:gap-section">
+  <!-- campaign-tile -->
+  <section
+    class="relative flex h-[70vh] min-h-105 items-end bg-ink bg-cover bg-center px-lg pb-xxl md:px-xl md:pb-section"
+    style="background-image: linear-gradient(0deg, rgba(17,17,17,.55), rgba(17,17,17,.05)), url('https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1600&q=80')"
+  >
+    <div class="max-w-2xl text-on-primary">
+      <h1 class="font-display text-display-mobile uppercase leading-none md:text-display-tablet lg:text-display">
+        Corre Libre
+      </h1>
+      <div class="mt-lg">
+        <button
+          type="button"
+          class="inline-flex items-center justify-center rounded-full bg-canvas px-xl py-md text-button font-medium text-ink"
+          (click)="nav.goToProducts()"
+        >
+          Comprar Ahora
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trending Now -->
+  <section class="px-lg md:px-xl">
+    <h2 class="text-heading-xl font-medium">Tendencias</h2>
+    <div class="mt-lg grid grid-cols-2 gap-sm md:grid-cols-4">
+      @for (product of trending() | slice: 0 : 4; track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  </section>
+
+  <!-- Shop by Sport -->
+  <section class="px-lg md:px-xl">
+    <h2 class="text-heading-xl font-medium">Compra por Deporte</h2>
+    <div class="mt-lg flex gap-sm overflow-x-auto pb-sm">
+      @for (tile of sportTiles; track tile.name) {
+        <div
+          class="relative flex aspect-4/5 w-48 flex-none items-end bg-cover bg-center md:w-64"
+          [style.background-image]="'url(' + tile.image + ')'"
+        >
+          <div class="absolute inset-0 bg-linear-to-t from-ink/50 to-transparent"></div>
+          <button
+            type="button"
+            class="relative m-md inline-flex items-center justify-center rounded-full bg-canvas px-lg py-md text-button-sm font-medium text-ink"
+            (click)="nav.goToProducts(tile.name)"
+          >
+            {{ tile.name }}
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- Latest in Clothing -->
+  <section class="px-lg md:px-xl">
+    <h2 class="text-heading-xl font-medium">Lo Último en Ropa</h2>
+    <div class="mt-lg grid grid-cols-3 gap-sm md:grid-cols-6">
+      @for (category of categoryIcons; track category.label) {
+        <div class="flex flex-col items-center gap-sm bg-canvas py-lg">
+          <span class="text-4xl">{{ category.emoji }}</span>
+          <span class="text-caption font-medium">{{ category.label }}</span>
+        </div>
+      }
+    </div>
+  </section>
+</div>

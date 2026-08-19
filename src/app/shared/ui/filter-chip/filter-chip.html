@@ -1,0 +1,8 @@
+<button
+  type="button"
+  class="rounded-full border border-hairline px-lg py-sm text-button-sm font-medium transition-colors"
+  [ngClass]="active() ? 'bg-ink text-on-primary border-ink' : 'bg-canvas text-ink'"
+  (click)="toggle()"
+>
+  {{ label() }}
+</button>
