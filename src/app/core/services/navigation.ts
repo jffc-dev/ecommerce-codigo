@@ -5,7 +5,7 @@ export type View = 'home' | 'product-list' | 'product-detail' | 'cart';
 @Injectable({ providedIn: 'root' })
 export class NavigationService {
   readonly view = signal<View>('home');
-  readonly selectedProductId = signal<number | null>(null);
+  readonly selectedProductId = signal<string | null>(null);
   readonly categoryFilter = signal<string | null>(null);
   readonly searchQuery = signal<string | null>(null);
 
@@ -29,7 +29,7 @@ export class NavigationService {
     this.setView('product-list');
   }
 
-  goToProduct(id: number): void {
+  goToProduct(id: string): void {
     this.selectedProductId.set(id);
     this.setView('product-detail');
   }

@@ -1,9 +1,10 @@
 import { CurrencyPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 
+import { CartItem } from '../../core/models/product.model';
 import { CartService } from '../../core/services/cart';
 import { NavigationService } from '../../core/services/navigation';
-import { discountedPrice } from '../../core/utils/pricing';
+import { variantImages, variantPrice } from '../../core/utils/product-helpers';
 import { IconButton } from '../../shared/ui/icon-button/icon-button';
 import { QuantityStepper } from '../../shared/ui/quantity-stepper/quantity-stepper';
 
@@ -16,9 +17,17 @@ import { QuantityStepper } from '../../shared/ui/quantity-stepper/quantity-stepp
 export class Cart {
   protected readonly cart = inject(CartService);
   protected readonly nav = inject(NavigationService);
-  protected readonly discountedPrice = discountedPrice;
+  protected readonly variantPrice = variantPrice;
 
-  onQuantityChange(productId: number, quantity: number): void {
-    this.cart.updateQuantity(productId, quantity);
+  onQuantityChange(variantId: string, quantity: number): void {
+    this.cart.updateQuantity(variantId, quantity);
+  }
+
+  lineImage(item: CartItem): string | null {
+    return variantImages(item.product, item.variant)[0]?.url ?? null;
+  }
+
+  lineOptions(item: CartItem): string {
+    return item.variant.product_variant_option_value.map((pivot) => pivot.variant_option_value.value).join(' · ');
   }
 }

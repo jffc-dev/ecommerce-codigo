@@ -1,7 +1,7 @@
 import { Injectable, computed, effect, signal } from '@angular/core';
 
-import { CartItem, Product } from '../models/product.model';
-import { discountedPrice } from '../utils/pricing';
+import { CartItem, Product, ProductVariant } from '../models/product.model';
+import { variantPrice } from '../utils/product-helpers';
 
 const STORAGE_KEY = 'stride-cart';
 
@@ -23,7 +23,7 @@ export class CartService {
   readonly itemCount = computed(() => this.items().reduce((total, item) => total + item.quantity, 0));
 
   readonly subtotal = computed(() =>
-    this.items().reduce((total, item) => total + discountedPrice(item.product) * item.quantity, 0),
+    this.items().reduce((total, item) => total + variantPrice(item.product, item.variant) * item.quantity, 0),
   );
 
   readonly shipping = computed(() => (this.subtotal() === 0 || this.subtotal() > 50 ? 0 : 6.99));
@@ -36,30 +36,30 @@ export class CartService {
     });
   }
 
-  addItem(product: Product, quantity = 1): void {
+  addItem(product: Product, variant: ProductVariant, quantity = 1): void {
     this.items.update((items) => {
-      const existing = items.find((item) => item.product.id === product.id);
+      const existing = items.find((item) => item.variant.id === variant.id);
       if (existing) {
         return items.map((item) =>
-          item.product.id === product.id ? { ...item, quantity: item.quantity + quantity } : item,
+          item.variant.id === variant.id ? { ...item, quantity: item.quantity + quantity } : item,
         );
       }
-      return [...items, { product, quantity }];
+      return [...items, { product, variant, quantity }];
     });
   }
 
-  updateQuantity(productId: number, quantity: number): void {
+  updateQuantity(variantId: string, quantity: number): void {
     if (quantity < 1) {
-      this.removeItem(productId);
+      this.removeItem(variantId);
       return;
     }
     this.items.update((items) =>
-      items.map((item) => (item.product.id === productId ? { ...item, quantity } : item)),
+      items.map((item) => (item.variant.id === variantId ? { ...item, quantity } : item)),
     );
   }
 
-  removeItem(productId: number): void {
-    this.items.update((items) => items.filter((item) => item.product.id !== productId));
+  removeItem(variantId: string): void {
+    this.items.update((items) => items.filter((item) => item.variant.id !== variantId));
   }
 
   clear(): void {

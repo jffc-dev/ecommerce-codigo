@@ -33,12 +33,11 @@
       <aside class="hidden w-55 flex-none md:block">
         <h3 class="text-body-strong font-medium">Categorías</h3>
         <div class="mt-lg flex flex-col items-start gap-sm">
-          @for (category of categories(); track category) {
+          @for (category of categories(); track category.id) {
             <app-filter-chip
-              [label]="category"
-              class="capitalize"
-              [active]="nav.categoryFilter() === category"
-              (activeChange)="toggleCategory(category)"
+              [label]="category.name"
+              [active]="nav.categoryFilter() === category.name"
+              (activeChange)="toggleCategory(category.name)"
             />
           }
         </div>

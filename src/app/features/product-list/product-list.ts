@@ -1,8 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
 
-import { Product } from '../../core/models/product.model';
+import { Category, Product } from '../../core/models/product.model';
 import { NavigationService } from '../../core/services/navigation';
 import { ProductService } from '../../core/services/product';
+import { startingPrice } from '../../core/utils/product-helpers';
 import { FilterChip } from '../../shared/ui/filter-chip/filter-chip';
 import { IconButton } from '../../shared/ui/icon-button/icon-button';
 import { ProductCard } from '../../shared/ui/product-card/product-card';
@@ -20,7 +21,7 @@ export class ProductList {
   protected readonly nav = inject(NavigationService);
 
   protected readonly products = signal<Product[]>([]);
-  protected readonly categories = signal<string[]>([]);
+  protected readonly categories = signal<Category[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
@@ -33,17 +34,17 @@ export class ProductList {
     const term = this.nav.searchQuery()?.toLowerCase() ?? '';
 
     if (category) {
-      list = list.filter((product) => product.category === category);
+      list = list.filter((product) => product.product_category.some((link) => link.category.name === category));
     }
     if (term) {
-      list = list.filter((product) => product.title.toLowerCase().includes(term));
+      list = list.filter((product) => product.name.toLowerCase().includes(term));
     }
 
     const sort = this.sortBy();
     if (sort === 'price-asc') {
-      list = [...list].sort((a, b) => a.price - b.price);
+      list = [...list].sort((a, b) => startingPrice(a) - startingPrice(b));
     } else if (sort === 'price-desc') {
-      list = [...list].sort((a, b) => b.price - a.price);
+      list = [...list].sort((a, b) => startingPrice(b) - startingPrice(a));
     }
 
     return list;
@@ -73,8 +74,8 @@ export class ProductList {
     });
   }
 
-  toggleCategory(category: string): void {
-    this.nav.categoryFilter.update((current) => (current === category ? null : category));
+  toggleCategory(categoryName: string): void {
+    this.nav.categoryFilter.update((current) => (current === categoryName ? null : categoryName));
   }
 
   onSortChange(value: string): void {

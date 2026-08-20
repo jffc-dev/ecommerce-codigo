@@ -6,19 +6,28 @@ import { Product } from '../../core/models/product.model';
 import { CartService } from '../../core/services/cart';
 import { NavigationService } from '../../core/services/navigation';
 import { ProductService } from '../../core/services/product';
-import { discountPercent, discountedPrice, isOnSale, swatchesFor } from '../../core/utils/pricing';
+import {
+  categoryLabel,
+  colorSwatchHex,
+  findVariant,
+  hasPriceRange,
+  optionNames,
+  optionValues,
+  variantImages,
+  variantPrice,
+} from '../../core/utils/product-helpers';
 import { Button } from '../../shared/ui/button/button';
 import { ColorSwatchPicker } from '../../shared/ui/color-swatch-picker/color-swatch-picker';
 import { FilterChip } from '../../shared/ui/filter-chip/filter-chip';
 import { IconButton } from '../../shared/ui/icon-button/icon-button';
 import { QuantityStepper } from '../../shared/ui/quantity-stepper/quantity-stepper';
 
-const SIZES = ['S', 'M', 'L', 'XL'];
-
 interface DisclosureRow {
   key: string;
   label: string;
 }
+
+const COLOR_OPTION_NAME = 'Color';
 
 @Component({
   selector: 'app-product-detail',
@@ -32,41 +41,86 @@ export class ProductDetail {
   private readonly titleService = inject(Title);
   protected readonly nav = inject(NavigationService);
 
+  protected readonly categoryOptionName = COLOR_OPTION_NAME;
   protected readonly product = signal<Product | null>(null);
-
-  protected readonly onSale = computed(() => {
+  protected readonly category = computed(() => {
     const product = this.product();
-    return product ? isOnSale(product) : false;
+    return product ? categoryLabel(product) : '';
   });
+
+  protected readonly optionTypes = computed(() => {
+    const product = this.product();
+    return product ? optionNames(product) : [];
+  });
+
+  protected readonly selections = signal<Record<string, string>>({});
+
+  protected readonly selectedVariant = computed(() => {
+    const product = this.product();
+    return product ? findVariant(product, this.selections()) : undefined;
+  });
+
+  protected readonly allOptionsSelected = computed(
+    () => this.optionTypes().length > 0 && this.optionTypes().every((name) => !!this.selections()[name]),
+  );
 
   protected readonly price = computed(() => {
     const product = this.product();
-    return product ? discountedPrice(product) : 0;
+    return product ? variantPrice(product, this.selectedVariant() ?? null) : 0;
   });
 
-  protected readonly discountPercent = discountPercent();
-
-  protected readonly swatches = computed(() => {
+  protected readonly showsFromPrice = computed(() => {
     const product = this.product();
-    return product ? swatchesFor(product) : [];
+    return product ? hasPriceRange(product) && !this.selectedVariant() : false;
   });
 
-  protected readonly sizes = SIZES;
-  protected readonly selectedColor = signal<string | null>(null);
-  protected readonly selectedSize = signal<string | null>(null);
+  protected readonly imageList = computed(() => {
+    const product = this.product();
+    return product ? variantImages(product, this.selectedVariant() ?? null) : [];
+  });
+
+  protected readonly activeImageIndex = signal(0);
+  protected readonly activeImage = computed(() => this.imageList()[this.activeImageIndex()]?.url ?? null);
+
+  protected readonly colorOptions = computed(() => {
+    const product = this.product();
+    if (!product) {
+      return [];
+    }
+    return optionValues(product, COLOR_OPTION_NAME).map((value) => ({ value, hex: colorSwatchHex(value) }));
+  });
+
   protected readonly quantity = signal(1);
   protected readonly addedToBag = signal(false);
+
+  protected readonly canAddToBag = computed(
+    () => this.allOptionsSelected() && !!this.selectedVariant() && this.selectedVariant()!.stock > 0,
+  );
+
+  protected readonly addButtonLabel = computed(() => {
+    if (this.addedToBag()) {
+      return 'Agregado ✓';
+    }
+    if (!this.allOptionsSelected()) {
+      return 'Elige las opciones';
+    }
+    if (!this.canAddToBag()) {
+      return 'Sin stock';
+    }
+    return 'Agregar a la Bolsa';
+  });
 
   protected readonly disclosureRows: DisclosureRow[] = [
     { key: 'details', label: 'Detalles del Producto' },
     { key: 'shipping', label: 'Envíos y Devoluciones' },
-    { key: 'reviews', label: 'Reseñas' },
+    { key: 'availability', label: 'Disponibilidad' },
   ];
   protected readonly expandedRow = signal<string | null>('details');
 
   constructor() {
     effect(() => {
       const id = this.nav.selectedProductId();
+      this.selections.set({});
       if (id == null) {
         this.product.set(null);
         return;
@@ -78,8 +132,13 @@ export class ProductDetail {
     });
 
     effect(() => {
+      this.imageList();
+      this.activeImageIndex.set(0);
+    });
+
+    effect(() => {
       const product = this.product();
-      this.titleService.setTitle(product ? `${product.title} | STRIDE` : 'STRIDE');
+      this.titleService.setTitle(product ? `${product.name} | STRIDE` : 'STRIDE');
     });
   }
 
@@ -87,8 +146,33 @@ export class ProductDetail {
     this.nav.goBack();
   }
 
-  selectSize(size: string): void {
-    this.selectedSize.update((current) => (current === size ? null : size));
+  optionValuesFor(optionName: string): string[] {
+    const product = this.product();
+    return product ? optionValues(product, optionName) : [];
+  }
+
+  toggleOption(optionName: string, value: string): void {
+    this.selections.update((current) => {
+      const next = { ...current };
+      if (next[optionName] === value) {
+        delete next[optionName];
+      } else {
+        next[optionName] = value;
+      }
+      return next;
+    });
+  }
+
+  setColor(value: string | null): void {
+    this.selections.update((current) => {
+      const next = { ...current };
+      if (value === null) {
+        delete next[COLOR_OPTION_NAME];
+      } else {
+        next[COLOR_OPTION_NAME] = value;
+      }
+      return next;
+    });
   }
 
   toggleRow(key: string): void {
@@ -97,10 +181,11 @@ export class ProductDetail {
 
   addToBag(): void {
     const product = this.product();
-    if (!product) {
+    const variant = this.selectedVariant();
+    if (!product || !variant || variant.stock < 1) {
       return;
     }
-    this.cart.addItem(product, this.quantity());
+    this.cart.addItem(product, variant, this.quantity());
     this.addedToBag.set(true);
     setTimeout(() => this.addedToBag.set(false), 2000);
   }

@@ -1,7 +1,7 @@
 <div class="flex items-center gap-sm">
-  @for (color of colors(); track color) {
-    <button type="button" class="p-xxs" [attr.aria-label]="'Color ' + color" (click)="select(color)">
-      <app-swatch-dot [color]="color" [active]="color === selected()" />
+  @for (color of colors(); track color.value) {
+    <button type="button" class="p-xxs" [attr.aria-label]="'Color ' + color.value" (click)="select(color.value)">
+      <app-swatch-dot [color]="color.hex" [active]="color.value === selected()" />
     </button>
   }
 </div>
