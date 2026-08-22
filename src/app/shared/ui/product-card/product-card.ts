@@ -2,7 +2,6 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 
 import { Product } from '../../../core/models/product.model';
-import { NavigationService } from '../../../core/services/navigation';
 import {
   categoryLabel,
   colorSwatchHex,
@@ -13,6 +12,7 @@ import {
 } from '../../../core/utils/product-helpers';
 import { Badge } from '../badge/badge';
 import { SwatchDot } from '../swatch-dot/swatch-dot';
+import { Router } from '@angular/router';
 
 const NEW_THRESHOLD_DAYS = 14;
 
@@ -23,8 +23,7 @@ const NEW_THRESHOLD_DAYS = 14;
   styleUrl: './product-card.css',
 })
 export class ProductCard {
-  private readonly nav = inject(NavigationService);
-
+  private router = inject(Router)
   readonly product = input.required<Product>();
 
   protected readonly image = computed(() => defaultImageUrl(this.product()));
@@ -39,6 +38,6 @@ export class ProductCard {
   });
 
   open(): void {
-    this.nav.goToProduct(this.product().id);
+    this.router.navigate(['product-detail', this.product().id])
   }
 }

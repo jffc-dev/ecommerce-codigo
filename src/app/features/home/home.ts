@@ -3,9 +3,9 @@ import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 
-import { NavigationService } from '../../core/services/navigation';
 import { ProductService } from '../../core/services/product';
 import { ProductCard } from '../../shared/ui/product-card/product-card';
+import { Router } from '@angular/router';
 
 interface SportTile {
   name: string;
@@ -41,13 +41,17 @@ const CATEGORY_ICONS: CategoryIcon[] = [
 })
 export class Home {
   private readonly productService = inject(ProductService);
-  protected readonly nav = inject(NavigationService);
 
   protected readonly sportTiles = SPORT_TILES;
   protected readonly categoryIcons = CATEGORY_ICONS;
+  private router = inject(Router)
 
   protected readonly trending = toSignal(
     this.productService.getProducts().pipe(catchError(() => of([]))),
     { initialValue: [] },
   );
+
+  goToProducts(){
+    this.router.navigate(['product-list'])
+  }
 }

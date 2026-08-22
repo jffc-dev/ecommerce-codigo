@@ -1,10 +1,9 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 import { Product } from '../../core/models/product.model';
 import { CartService } from '../../core/services/cart';
-import { NavigationService } from '../../core/services/navigation';
 import { ProductService } from '../../core/services/product';
 import {
   categoryLabel,
@@ -39,7 +38,7 @@ export class ProductDetail {
   private readonly productService = inject(ProductService);
   private readonly cart = inject(CartService);
   private readonly titleService = inject(Title);
-  protected readonly nav = inject(NavigationService);
+  id = input.required<string>()
 
   protected readonly categoryOptionName = COLOR_OPTION_NAME;
   protected readonly product = signal<Product | null>(null);
@@ -119,13 +118,8 @@ export class ProductDetail {
 
   constructor() {
     effect(() => {
-      const id = this.nav.selectedProductId();
       this.selections.set({});
-      if (id == null) {
-        this.product.set(null);
-        return;
-      }
-      this.productService.getProduct(id).subscribe({
+      this.productService.getProduct(this.id()).subscribe({
         next: (product) => this.product.set(product),
         error: () => this.product.set(null),
       });
@@ -143,7 +137,8 @@ export class ProductDetail {
   }
 
   goBack(): void {
-    this.nav.goBack();
+    //todo
+    // this.nav.goBack();
   }
 
   optionValuesFor(optionName: string): string[] {

@@ -3,10 +3,10 @@ import { Component, inject } from '@angular/core';
 
 import { CartItem } from '../../core/models/product.model';
 import { CartService } from '../../core/services/cart';
-import { NavigationService } from '../../core/services/navigation';
 import { variantImages, variantPrice } from '../../core/utils/product-helpers';
 import { IconButton } from '../../shared/ui/icon-button/icon-button';
 import { QuantityStepper } from '../../shared/ui/quantity-stepper/quantity-stepper';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -16,8 +16,8 @@ import { QuantityStepper } from '../../shared/ui/quantity-stepper/quantity-stepp
 })
 export class Cart {
   protected readonly cart = inject(CartService);
-  protected readonly nav = inject(NavigationService);
   protected readonly variantPrice = variantPrice;
+  private router = inject(Router)
 
   onQuantityChange(variantId: string, quantity: number): void {
     this.cart.updateQuantity(variantId, quantity);
@@ -29,5 +29,9 @@ export class Cart {
 
   lineOptions(item: CartItem): string {
     return item.variant.product_variant_option_value.map((pivot) => pivot.variant_option_value.value).join(' · ');
+  }
+
+  goToProducts(){
+    this.router.navigate(['product-list'])
   }
 }

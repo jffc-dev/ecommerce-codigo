@@ -12,7 +12,7 @@
         <button
           type="button"
           class="inline-flex items-center justify-center rounded-full bg-canvas px-xl py-md text-button font-medium text-ink"
-          (click)="nav.goToProducts()"
+          (click)="goToProducts()"
         >
           Comprar Ahora
         </button>
@@ -43,7 +43,7 @@
           <button
             type="button"
             class="relative m-md inline-flex items-center justify-center rounded-full bg-canvas px-lg py-md text-button-sm font-medium text-ink"
-            (click)="nav.goToProducts(tile.name)"
+            (click)="goToProducts()"
           >
             {{ tile.name }}
           </button>

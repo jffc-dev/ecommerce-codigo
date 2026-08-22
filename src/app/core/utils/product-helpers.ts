@@ -35,7 +35,9 @@ function sortByPosition(images: ProductImage[]): ProductImage[] {
 }
 
 export function defaultImageUrl(product: Product): string | null {
-  const images = product.product_image ?? [];
+  const images = product.product_image?.length
+    ? product.product_image
+    : (product.product_variant ?? []).flatMap((variant) => variant.product_image ?? []);
   const primary = images.find((image) => image.is_default) ?? sortByPosition(images)[0];
   return primary?.url ?? null;
 }
@@ -106,5 +108,9 @@ export function variantImages(product: Product, variant: ProductVariant | null):
   if (variant && variant.product_image.length > 0) {
     return sortByPosition(variant.product_image);
   }
-  return sortByPosition(product.product_image ?? []);
+  if (product.product_image?.length) {
+    return sortByPosition(product.product_image);
+  }
+  const fallback = (product.product_variant ?? []).flatMap((v) => v.product_image ?? []);
+  return sortByPosition(fallback);
 }

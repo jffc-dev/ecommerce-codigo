@@ -3,8 +3,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { CartService } from '../../core/services/cart';
-import { NavigationService } from '../../core/services/navigation';
 import { IconButton } from '../../shared/ui/icon-button/icon-button';
+import { Router } from '@angular/router';
 
 const NAV_LINKS = ['Novedades', 'Hombre', 'Mujer', 'Niños', 'Ofertas'];
 
@@ -17,7 +17,7 @@ const NAV_LINKS = ['Novedades', 'Hombre', 'Mujer', 'Niños', 'Ofertas'];
 export class Header {
   private readonly destroyRef = inject(DestroyRef);
   private readonly cart = inject(CartService);
-  protected readonly nav = inject(NavigationService);
+  private router = inject(Router)
 
   protected readonly navLinks = NAV_LINKS;
   protected readonly cartCount = this.cart.itemCount;
@@ -33,7 +33,7 @@ export class Header {
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((term) => {
         if (term.trim()) {
-          this.nav.search(term.trim());
+          // this.nav.search(term.trim());
           this.isSearchOpen.set(false);
         }
       });
@@ -62,7 +62,8 @@ export class Header {
   }
 
   selectCategory(category: string): void {
-    this.nav.goToProducts(category);
+    //todo -- category
+    this.router.navigate(['product-list'])
     this.closeMenu();
   }
 }
