@@ -66,4 +66,12 @@ export class Header {
     this.router.navigate(['product-list'])
     this.closeMenu();
   }
+
+  goToCart(){
+    this.router.navigate(['cart'])
+  }
+
+  goToHome(){
+    this.router.navigate([''])
+  }
 }
