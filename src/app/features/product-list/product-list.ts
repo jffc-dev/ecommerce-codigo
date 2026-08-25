@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 
 import { Category, Product } from '../../core/models/product.model';
 import { ProductService } from '../../core/services/product';
@@ -6,6 +6,7 @@ import { startingPrice } from '../../core/utils/product-helpers';
 import { FilterChip } from '../../shared/ui/filter-chip/filter-chip';
 import { IconButton } from '../../shared/ui/icon-button/icon-button';
 import { ProductCard } from '../../shared/ui/product-card/product-card';
+import { Router } from '@angular/router';
 
 type SortOption = 'relevance' | 'price-asc' | 'price-desc';
 
@@ -16,6 +17,7 @@ type SortOption = 'relevance' | 'price-asc' | 'price-desc';
   styleUrl: './product-list.css',
 })
 export class ProductList {
+  private router = inject(Router)
   private readonly productService = inject(ProductService);
 
   protected readonly products = signal<Product[]>([]);
@@ -23,7 +25,7 @@ export class ProductList {
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
 
-  protected readonly sortBy = signal<SortOption>('relevance');
+  sortBy = input<SortOption>('relevance', {alias: 'sort'});
   protected readonly showFilters = signal(true);
 
   protected readonly filteredProducts = computed(() => {
@@ -38,12 +40,12 @@ export class ProductList {
     //   list = list.filter((product) => product.name.toLowerCase().includes(term));
     // }
 
-    // const sort = this.sortBy();
-    // if (sort === 'price-asc') {
-    //   list = [...list].sort((a, b) => startingPrice(a) - startingPrice(b));
-    // } else if (sort === 'price-desc') {
-    //   list = [...list].sort((a, b) => startingPrice(b) - startingPrice(a));
-    // }
+    const sort = this.sortBy();
+    if (sort === 'price-asc') {
+      list = [...list].sort((a, b) => startingPrice(a) - startingPrice(b));
+    } else if (sort === 'price-desc') {
+      list = [...list].sort((a, b) => startingPrice(b) - startingPrice(a));
+    }
 
     return list;
   });
@@ -77,7 +79,11 @@ export class ProductList {
   }
 
   onSortChange(value: string): void {
-    this.sortBy.set(value as SortOption);
+    this.router.navigate(['product-list'], {
+      queryParams: {
+        sort: value
+      }
+    })
   }
 
   toggleFilters(): void {

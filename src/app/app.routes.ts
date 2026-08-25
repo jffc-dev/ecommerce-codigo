@@ -1,15 +1,10 @@
 import { Route } from "@angular/router";
-import { Home } from "./features/home/home";
-import { ProductList } from "./features/product-list/product-list";
-import { ProductDetail } from "./features/product-detail/product-detail";
-import { Cart } from "./features/cart/cart";
-import { NotFound } from "./features/not-found/not-found";
 
 export const routes: Route[] = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
-  {path: 'home', component: Home},
-  {path: 'product-list', component: ProductList},
-  {path: 'product-detail/:id', component: ProductDetail},
-  {path: 'cart', component: Cart},
-  {path: '**', component: NotFound},
+  {path: 'home', loadComponent: () => import('./features/home/home').then(n => n.Home)},
+  {path: 'product-list', loadComponent: () => import('./features/product-list/product-list').then(n => n.ProductList)},
+  {path: 'product-detail/:id', loadComponent: () => import('./features/product-detail/product-detail').then(n => n.ProductDetail)},
+  {path: 'cart', loadComponent: () => import('./features/cart/cart').then(n => n.Cart)},
+  {path: '**', loadComponent: () => import('./features/not-found/not-found').then(n => n.NotFound)},
 ]
