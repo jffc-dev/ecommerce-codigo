@@ -1,0 +1,5 @@
+.field-halo:focus-within {
+  border-color: var(--color-ink);
+  background-color: var(--color-canvas);
+  box-shadow: 0 0 0 4px var(--color-soft-cloud);
+}

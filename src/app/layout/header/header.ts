@@ -74,4 +74,12 @@ export class Header {
   goToHome(){
     this.router.navigate([''])
   }
+
+  goToLogin(){
+    this.router.navigate(['login'])
+  }
+
+  goToRegister(){
+    this.router.navigate(['login'], { queryParams: { mode: 'register' } })
+  }
 }

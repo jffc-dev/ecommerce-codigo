@@ -1,0 +1,251 @@
+<div class="grid min-h-[calc(100vh-56px)] grid-cols-1 md:grid-cols-2">
+  <!-- campaign-tile: editorial brand moment -->
+  <section
+    class="relative hidden items-end bg-ink bg-cover bg-center px-xl pb-section md:flex"
+    style="background-image: linear-gradient(0deg, rgba(17,17,17,.6), rgba(17,17,17,.05)), url('https://images.unsplash.com/photo-1483721310020-03333e577078?w=1200&q=80')"
+  >
+    <h1 class="max-w-md font-display text-display-tablet uppercase leading-none text-on-primary">
+      {{ isLogin() ? 'Bienvenido de Vuelta' : 'Únete al Equipo' }}
+    </h1>
+  </section>
+
+  <!-- form panel -->
+  <section class="flex items-center justify-center px-lg py-section-mobile md:px-xxl md:py-section">
+    <div class="w-full max-w-96">
+      <button type="button" class="font-display text-3xl uppercase tracking-wide" (click)="goToHome()">
+        Stride
+      </button>
+
+      <!-- tab switcher -->
+      <div class="mt-xl flex gap-xxs rounded-full bg-soft-cloud p-xxs" role="tablist">
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="isLogin()"
+          class="flex-1 rounded-full py-sm text-button-sm font-medium transition-colors"
+          [class.bg-ink]="isLogin()"
+          [class.text-on-primary]="isLogin()"
+          [class.text-ink]="!isLogin()"
+          (click)="switchTab('login')"
+        >
+          Iniciar Sesión
+        </button>
+        <button
+          type="button"
+          role="tab"
+          [attr.aria-selected]="!isLogin()"
+          class="flex-1 rounded-full py-sm text-button-sm font-medium transition-colors"
+          [class.bg-ink]="!isLogin()"
+          [class.text-on-primary]="!isLogin()"
+          [class.text-ink]="isLogin()"
+          (click)="switchTab('register')"
+        >
+          Crear Cuenta
+        </button>
+      </div>
+
+      @if (isLogin()) {
+        <!-- LOGIN -->
+        <h2 class="mt-xl text-heading-xl font-medium">Iniciar Sesión</h2>
+        <p class="mt-xxs text-body text-mute">Ingresa tus datos para acceder a tu cuenta.</p>
+
+        <form class="mt-xl flex flex-col gap-lg" [formGroup]="loginForm" (ngSubmit)="submitLogin()">
+          <div class="flex flex-col gap-xs">
+            <label for="login-email" class="text-caption text-mute">Correo Electrónico</label>
+            <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+              <input
+                id="login-email"
+                type="email"
+                formControlName="email"
+                autocomplete="email"
+                placeholder="tu@correo.com"
+                class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute"
+              />
+            </div>
+            @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
+              <span class="text-caption-sm text-sale">Ingresa un correo electrónico válido.</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-xs">
+            <div class="flex items-center justify-between">
+              <label for="login-password" class="text-caption text-mute">Contraseña</label>
+              <a href="javascript:void(0)" class="text-link text-ink underline">¿Olvidaste tu contraseña?</a>
+            </div>
+            <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+              <input
+                id="login-password"
+                [type]="showPassword() ? 'text' : 'password'"
+                formControlName="password"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute"
+              />
+              <button type="button" class="text-caption-sm font-medium text-mute" (click)="toggleShowPassword()">
+                {{ showPassword() ? 'Ocultar' : 'Mostrar' }}
+              </button>
+            </div>
+            @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
+              <span class="text-caption-sm text-sale">Tu contraseña debe tener al menos 6 caracteres.</span>
+            }
+          </div>
+
+          @if (submitError()) {
+            <span class="text-caption text-sale">{{ submitError() }}</span>
+          }
+
+          <button
+            type="submit"
+            [disabled]="submitting()"
+            class="mt-sm inline-flex h-12 w-full items-center justify-center rounded-full bg-ink text-button text-on-primary transition-transform active:scale-[0.98] disabled:opacity-40"
+          >
+            {{ submitting() ? 'Ingresando…' : 'Iniciar Sesión' }}
+          </button>
+        </form>
+
+        <div class="mt-xl flex items-center gap-md">
+          <hr class="flex-1 border-hairline" />
+          <span class="text-caption-sm text-mute">O</span>
+          <hr class="flex-1 border-hairline" />
+        </div>
+
+        <button
+          type="button"
+          class="mt-xl inline-flex h-12 w-full items-center justify-center rounded-full bg-soft-cloud text-button text-ink"
+          (click)="goToHome()"
+        >
+          Continuar como Invitado
+        </button>
+
+        <p class="mt-xl text-center text-body text-mute">
+          ¿No tienes cuenta?
+          <a href="javascript:void(0)" class="text-link text-ink underline" (click)="switchTab('register')">Crear una</a>
+        </p>
+      } @else {
+        <!-- REGISTER -->
+        <h2 class="mt-xl text-heading-xl font-medium">Crear Cuenta</h2>
+        <p class="mt-xxs text-body text-mute">Regístrate para seguir tus pedidos y guardar tus favoritos.</p>
+
+        @if (registered()) {
+          <div class="mt-xl flex flex-col items-start gap-sm">
+            <span class="text-body-strong font-medium text-success">Cuenta creada con éxito.</span>
+            <p class="text-body text-mute">Ya puedes iniciar sesión con tu correo y contraseña.</p>
+            <button
+              type="button"
+              class="mt-md inline-flex h-12 items-center justify-center rounded-full bg-ink px-xl text-button text-on-primary"
+              (click)="switchTab('login')"
+            >
+              Ir a Iniciar Sesión
+            </button>
+          </div>
+        } @else {
+          <form class="mt-xl flex flex-col gap-lg" [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+            <div class="flex flex-col gap-xs">
+              <label for="register-name" class="text-caption text-mute">Nombre Completo</label>
+              <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+                <input
+                  id="register-name"
+                  type="text"
+                  formControlName="name"
+                  autocomplete="name"
+                  placeholder="Nombre y apellido"
+                  class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute"
+                />
+              </div>
+              @if (registerForm.controls.name.invalid && registerForm.controls.name.touched) {
+                <span class="text-caption-sm text-sale">Ingresa tu nombre.</span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-xs">
+              <label for="register-email" class="text-caption text-mute">Correo Electrónico</label>
+              <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+                <input
+                  id="register-email"
+                  type="email"
+                  formControlName="email"
+                  autocomplete="email"
+                  placeholder="tu@correo.com"
+                  class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute"
+                />
+              </div>
+              @if (registerForm.controls.email.invalid && registerForm.controls.email.touched) {
+                <span class="text-caption-sm text-sale">Ingresa un correo electrónico válido.</span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-xs">
+              <label for="register-password" class="text-caption text-mute">Contraseña</label>
+              <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+                <input
+                  id="register-password"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  formControlName="password"
+                  autocomplete="new-password"
+                  placeholder="Mínimo 6 caracteres"
+                  class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute"
+                />
+                <button type="button" class="text-caption-sm font-medium text-mute" (click)="toggleShowPassword()">
+                  {{ showPassword() ? 'Ocultar' : 'Mostrar' }}
+                </button>
+              </div>
+              @if (registerForm.controls.password.invalid && registerForm.controls.password.touched) {
+                <span class="text-caption-sm text-sale">Tu contraseña debe tener al menos 6 caracteres.</span>
+              }
+            </div>
+
+            <div class="flex flex-col gap-xs">
+              <label for="register-confirm-password" class="text-caption text-mute">Confirmar Contraseña</label>
+              <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+                <input
+                  id="register-confirm-password"
+                  [type]="showConfirmPassword() ? 'text' : 'password'"
+                  formControlName="confirmPassword"
+                  autocomplete="new-password"
+                  placeholder="••••••••"
+                  class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute"
+                />
+                <button type="button" class="text-caption-sm font-medium text-mute" (click)="toggleShowConfirmPassword()">
+                  {{ showConfirmPassword() ? 'Ocultar' : 'Mostrar' }}
+                </button>
+              </div>
+              @if (registerForm.controls.confirmPassword.touched && registerForm.errors?.['passwordMismatch']) {
+                <span class="text-caption-sm text-sale">Las contraseñas no coinciden.</span>
+              }
+            </div>
+
+            <label class="flex items-start gap-sm text-caption text-mute">
+              <input type="checkbox" formControlName="acceptsTerms" class="mt-xxs h-4 w-4 accent-ink" />
+              <span>
+                Acepto los
+                <a href="javascript:void(0)" class="text-link text-ink underline">Términos y Condiciones</a>
+                y la
+                <a href="javascript:void(0)" class="text-link text-ink underline">Política de Privacidad</a>.
+              </span>
+            </label>
+            @if (registerForm.controls.acceptsTerms.invalid && registerForm.controls.acceptsTerms.touched) {
+              <span class="-mt-md text-caption-sm text-sale">Debes aceptar los términos para continuar.</span>
+            }
+
+            @if (submitError()) {
+              <span class="text-caption text-sale">{{ submitError() }}</span>
+            }
+
+            <button
+              type="submit"
+              [disabled]="submitting()"
+              class="mt-sm inline-flex h-12 w-full items-center justify-center rounded-full bg-ink text-button text-on-primary transition-transform active:scale-[0.98] disabled:opacity-40"
+            >
+              {{ submitting() ? 'Creando cuenta…' : 'Crear Cuenta' }}
+            </button>
+          </form>
+
+          <p class="mt-xl text-center text-body text-mute">
+            ¿Ya tienes cuenta?
+            <a href="javascript:void(0)" class="text-link text-ink underline" (click)="switchTab('login')">Iniciar sesión</a>
+          </p>
+        }
+      }
+    </div>
+  </section>
+</div>
