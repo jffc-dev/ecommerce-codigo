@@ -1,6 +1,7 @@
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth';
 
 export type AuthMode = 'login' | 'register';
 
@@ -21,6 +22,7 @@ function passwordsMatchValidator(): ValidatorFn {
 export class Auth {
   private readonly router = inject(Router);
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly auth = inject(AuthService)
 
   readonly mode = input<AuthMode>('login', { alias: 'mode' });
 
@@ -74,6 +76,7 @@ export class Auth {
     // TODO: reemplazar por llamada real a Supabase Auth (signInWithPassword)
     setTimeout(() => {
       this.submitting.set(false);
+      this.auth.login(this.loginForm.get('email')!.value, this.loginForm.get('password')!.value)
       this.router.navigate(['']);
     }, 600);
   }
