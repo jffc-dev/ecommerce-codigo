@@ -22,15 +22,9 @@ const PRODUCT_SELECT = [
 export class ProductService {
   private readonly http = inject(HttpClient);
 
-  private readonly headers = new HttpHeaders({
-    apikey: SUPABASE_ANON_KEY,
-    Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-  });
-
   getProducts(): Observable<Product[]> {
     return this.http
       .get<Product[]>(`${SUPABASE_REST_URL}/product`, {
-        headers: this.headers,
         params: { select: PRODUCT_SELECT, order: 'name.asc' },
       })
       .pipe(catchError(() => throwError(() => new Error('No pudimos cargar los productos. Intenta nuevamente.'))));
@@ -39,7 +33,6 @@ export class ProductService {
   getProduct(id: string): Observable<Product> {
     return this.http
       .get<Product[]>(`${SUPABASE_REST_URL}/product`, {
-        headers: this.headers,
         params: { select: PRODUCT_SELECT, id: `eq.${id}` },
       })
       .pipe(
@@ -56,7 +49,6 @@ export class ProductService {
   getCategories(): Observable<Category[]> {
     return this.http
       .get<Category[]>(`${SUPABASE_REST_URL}/category`, {
-        headers: this.headers,
         params: { select: 'id,name', order: 'name.asc' },
       })
       .pipe(catchError(() => throwError(() => new Error('No pudimos cargar las categorías.'))));
