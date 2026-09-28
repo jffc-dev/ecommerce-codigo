@@ -5,6 +5,7 @@
     <span>Ayuda</span>
     @if (isAuthenticated()) {
       <span>{{ currentUser()?.email }}</span>
+      <button type="button" class="hover:underline" (click)="goToMyOrders()">Mis Compras</button>
       <button type="button" (click)="logout()">Cerrar Sesión</button>
     } @else {
       <button type="button" (click)="goToRegister()">Únete</button>
@@ -98,6 +99,11 @@
       @for (link of navLinks; track link) {
         <button type="button" class="text-left text-heading-md font-medium" (click)="selectCategory(link)">
           {{ link }}
+        </button>
+      }
+      @if (isAuthenticated()) {
+        <button type="button" class="text-left text-heading-md font-medium" (click)="goToMyOrders()">
+          Mis Compras
         </button>
       }
     </nav>

@@ -13,6 +13,7 @@ export const routes: Route[] = [
 
   {path: 'cart', canActivate: [authGuard] ,component: Cart},
   {path: 'checkout', canMatch: [authGuard], loadComponent: () => import('./features/checkout/checkout').then(n => n.Checkout)},
+  {path: 'my-orders', canMatch: [authGuard], loadComponent: () => import('./features/my-orders/my-orders').then(n => n.MyOrders)},
 
 
   {path: 'product-detail/:id', loadComponent: () => import('./features/product-detail/product-detail').then(n => n.ProductDetail)},

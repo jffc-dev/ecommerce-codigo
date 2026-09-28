@@ -17,6 +17,33 @@ export interface CheckoutCustomer {
   notes: string;
 }
 
+export type OrderStatus = 'pending' | 'paid' | 'failed' | 'cancelled' | 'refunded';
+
+export interface OrderItem {
+  id: string;
+  product_name: string;
+  sku: string;
+  options: string | null;
+  unit_price: number;
+  quantity: number;
+  line_total: number;
+  image_url: string | null;
+}
+
+export interface Order {
+  id: string;
+  status: OrderStatus;
+  subtotal: number;
+  shipping: number;
+  total: number;
+  currency: string;
+  shipping_address: string;
+  shipping_city: string;
+  paid_at: string | null;
+  created_at: string;
+  items: OrderItem[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class OrderService {
   private readonly http = inject(HttpClient);
@@ -37,6 +64,16 @@ export class OrderService {
         }
         console.error('Error al crear el pedido', error);
         return throwError(() => new Error(GENERIC_ERROR_MESSAGE));
+      }),
+    );
+  }
+
+  /** Pedidos del cliente (más recientes primero) vía la función get_my_orders de Supabase. */
+  getMyOrders(email: string): Observable<Order[]> {
+    return this.http.post<Order[]>(`${SUPABASE_REST_URL}/rpc/get_my_orders`, { p_email: email }).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error('Error al cargar los pedidos', error);
+        return throwError(() => new Error('No pudimos cargar tus compras. Intenta nuevamente.'));
       }),
     );
   }

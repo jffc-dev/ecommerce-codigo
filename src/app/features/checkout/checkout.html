@@ -15,13 +15,22 @@
       <p class="text-caption text-mute">
         N.º de pedido: <span class="font-medium text-ink">{{ id.slice(0, 8).toUpperCase() }}</span>
       </p>
-      <button
-        type="button"
-        class="mt-md inline-flex h-12 items-center justify-center rounded-full bg-ink px-xxl text-button text-on-primary transition-all hover:bg-charcoal motion-safe:active:scale-[0.97]"
-        (click)="goToProducts()"
-      >
-        Seguir Comprando
-      </button>
+      <div class="mt-md flex flex-wrap justify-center gap-md">
+        <button
+          type="button"
+          class="inline-flex h-12 items-center justify-center rounded-full bg-soft-cloud px-xxl text-button text-ink transition-colors hover:bg-hairline-soft"
+          (click)="goToMyOrders()"
+        >
+          Ver Mis Compras
+        </button>
+        <button
+          type="button"
+          class="inline-flex h-12 items-center justify-center rounded-full bg-ink px-xxl text-button text-on-primary transition-all hover:bg-charcoal motion-safe:active:scale-[0.97]"
+          (click)="goToProducts()"
+        >
+          Seguir Comprando
+        </button>
+      </div>
     </div>
   } @else {
     <button type="button" class="text-caption text-mute hover:text-ink" (click)="backToCart()">← Volver a la bolsa</button>

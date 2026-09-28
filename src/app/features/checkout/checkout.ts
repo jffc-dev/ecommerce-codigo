@@ -76,6 +76,10 @@ export class Checkout {
     this.router.navigate(['product-list']);
   }
 
+  goToMyOrders(): void {
+    this.router.navigate(['my-orders']);
+  }
+
   backToCart(): void {
     this.router.navigate(['cart']);
   }

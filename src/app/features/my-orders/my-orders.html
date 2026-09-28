@@ -1,0 +1,122 @@
+<div class="mx-auto max-w-4xl px-lg py-xl md:px-xl">
+  <h1 class="text-heading-xl font-medium">Mis Compras</h1>
+
+  @if (loading()) {
+    <div class="mt-xl flex flex-col gap-lg" aria-busy="true">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="h-24 animate-pulse rounded-md bg-soft-cloud"></div>
+      }
+    </div>
+  } @else if (error()) {
+    <div class="flex flex-col items-center gap-lg py-section-mobile text-center">
+      <p class="text-body text-sale">{{ error() }}</p>
+      <button
+        type="button"
+        class="rounded-full bg-soft-cloud px-xl py-md text-button text-ink transition-colors hover:bg-hairline-soft"
+        (click)="load()"
+      >
+        Reintentar
+      </button>
+    </div>
+  } @else if (orders().length === 0) {
+    <div class="flex flex-col items-center gap-lg py-section-mobile text-center">
+      <p class="text-body text-mute">Aún no tienes compras.</p>
+      <button
+        type="button"
+        class="rounded-full bg-ink px-xl py-md text-button text-on-primary transition-all hover:bg-charcoal motion-safe:active:scale-[0.97]"
+        (click)="goToProducts()"
+      >
+        Ver Productos
+      </button>
+    </div>
+  } @else {
+    <div class="mt-xl flex flex-col gap-lg">
+      @for (order of orders(); track order.id) {
+        @let expanded = expandedId() === order.id;
+        <article class="rounded-md border border-hairline-soft">
+          <!-- cabecera del pedido -->
+          <button
+            type="button"
+            class="flex w-full flex-wrap items-center justify-between gap-md rounded-md p-lg text-left transition-colors hover:bg-soft-cloud md:p-xl"
+            [attr.aria-expanded]="expanded"
+            (click)="toggle(order)"
+          >
+            <div class="flex flex-col gap-xxs">
+              <span class="text-body-strong font-medium">Pedido #{{ shortId(order) }}</span>
+              <span class="text-caption text-mute">
+                {{ order.created_at | date: 'd MMM y, HH:mm' }} · {{ itemCount(order) }}
+                {{ itemCount(order) === 1 ? 'producto' : 'productos' }}
+              </span>
+            </div>
+
+            <div class="flex items-center gap-lg">
+              <span class="rounded-full px-md py-xxs text-caption-sm font-medium" [class]="status(order).classes">
+                {{ status(order).label }}
+              </span>
+              <span class="text-body-strong font-medium">{{ order.total | currency: order.currency }}</span>
+              <svg
+                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                class="transition-transform duration-200" [class.rotate-180]="expanded" aria-hidden="true"
+              >
+                <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </button>
+
+          <!-- detalle -->
+          @if (expanded) {
+            <div class="border-t border-hairline-soft p-lg md:p-xl">
+              <div class="flex flex-col gap-md">
+                @for (item of order.items; track item.id) {
+                  <div class="flex items-center gap-md">
+                    <div class="flex h-16 w-16 flex-none items-center justify-center bg-soft-cloud">
+                      @if (item.image_url) {
+                        <img [src]="item.image_url" [alt]="item.product_name" class="h-[80%] w-[80%] object-contain" loading="lazy" />
+                      }
+                    </div>
+                    <div class="flex flex-1 flex-wrap justify-between gap-sm">
+                      <div>
+                        <p class="text-caption font-medium">{{ item.product_name }}</p>
+                        <p class="text-caption-sm text-mute">
+                          @if (item.options) {
+                            {{ item.options }} ·
+                          }
+                          Cant. {{ item.quantity }} × {{ item.unit_price | currency: order.currency }}
+                        </p>
+                      </div>
+                      <span class="text-caption font-medium">{{ item.line_total | currency: order.currency }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <div class="mt-lg grid grid-cols-1 gap-lg border-t border-hairline-soft pt-lg md:grid-cols-2">
+                <div class="text-caption">
+                  <p class="text-mute">Envío a</p>
+                  <p class="mt-xxs">{{ order.shipping_address }}, {{ order.shipping_city }}</p>
+                  @if (order.paid_at) {
+                    <p class="mt-sm text-mute">Pagado el {{ order.paid_at | date: 'd MMM y, HH:mm' }}</p>
+                  }
+                </div>
+                <div class="flex flex-col gap-xs text-caption">
+                  <div class="flex justify-between">
+                    <span class="text-mute">Subtotal</span>
+                    <span>{{ order.subtotal | currency: order.currency }}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-mute">Envío</span>
+                    <span>{{ order.shipping === 0 ? 'Gratis' : (order.shipping | currency: order.currency) }}</span>
+                  </div>
+                  <div class="flex justify-between text-body-strong font-medium">
+                    <span>Total</span>
+                    <span>{{ order.total | currency: order.currency }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </article>
+      }
+    </div>
+  }
+</div>
