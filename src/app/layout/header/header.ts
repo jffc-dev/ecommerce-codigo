@@ -2,6 +2,7 @@ import { Component, DestroyRef, ElementRef, effect, inject, signal, viewChild } 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 
+import { AuthService } from '../../core/services/auth';
 import { CartService } from '../../core/services/cart';
 import { IconButton } from '../../shared/ui/icon-button/icon-button';
 import { Router } from '@angular/router';
@@ -17,10 +18,13 @@ const NAV_LINKS = ['Novedades', 'Hombre', 'Mujer', 'Niños', 'Ofertas'];
 export class Header {
   private readonly destroyRef = inject(DestroyRef);
   private readonly cart = inject(CartService);
+  private readonly auth = inject(AuthService);
   private router = inject(Router)
 
   protected readonly navLinks = NAV_LINKS;
   protected readonly cartCount = this.cart.itemCount;
+  protected readonly currentUser = this.auth.currentUser;
+  protected readonly isAuthenticated = this.auth.isAuthenticated;
 
   protected readonly isSearchOpen = signal(false);
   protected readonly isMenuOpen = signal(false);
@@ -81,5 +85,10 @@ export class Header {
 
   goToRegister(){
     this.router.navigate(['login'], { queryParams: { mode: 'register' } })
+  }
+
+  logout(){
+    this.auth.logout()
+    this.router.navigate([''])
   }
 }

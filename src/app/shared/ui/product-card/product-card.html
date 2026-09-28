@@ -1,13 +1,32 @@
-<button type="button" class="group block w-full text-left text-ink" (click)="open()">
-  <div class="relative flex aspect-square items-center justify-center bg-soft-cloud">
+<button
+  type="button"
+  class="group block w-full rounded-sm text-left text-ink focus-visible:outline-offset-4"
+  (click)="open()"
+>
+  <div
+    class="relative flex aspect-square items-center justify-center overflow-hidden bg-soft-cloud transition-colors duration-300 group-hover:bg-hairline-soft"
+  >
     @if (isNew()) {
-      <div class="absolute left-sm top-sm">
+      <div class="absolute left-sm top-sm z-10">
         <app-badge label="Just In" />
       </div>
     }
     @if (image(); as src) {
-      <img [src]="src" [alt]="product().name" class="h-[70%] w-[70%] object-contain" loading="lazy" />
+      <img
+        [src]="src"
+        [alt]="product().name"
+        class="h-[70%] w-[70%] object-contain transition-transform duration-500 ease-out motion-safe:group-hover:scale-110"
+        loading="lazy"
+      />
     }
+    <span
+      class="absolute bottom-sm right-sm flex h-9 w-9 translate-y-2 items-center justify-center rounded-full bg-canvas text-ink opacity-0 shadow-md transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+      aria-hidden="true"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14M13 6l6 6-6 6" />
+      </svg>
+    </span>
   </div>
 
   @if (colors().length > 0) {
@@ -18,7 +37,11 @@
     </div>
   }
 
-  <p class="mt-sm line-clamp-2 text-body-strong font-medium">{{ product().name }}</p>
+  <p
+    class="mt-sm line-clamp-2 text-body-strong font-medium underline-offset-4 decoration-1 group-hover:underline"
+  >
+    {{ product().name }}
+  </p>
   <p class="mt-xxs text-caption text-mute">{{ category() }}</p>
 
   <div class="mt-sm flex items-center gap-xs">

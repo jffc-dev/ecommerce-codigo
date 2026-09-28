@@ -27,18 +27,15 @@ export class ProductList {
 
   sortBy = input<SortOption>('relevance', {alias: 'sort'});
   protected readonly showFilters = signal(true);
+  protected readonly categoryFilter = signal<string | null>(null);
 
   protected readonly filteredProducts = computed(() => {
     let list = this.products();
-    // const category = this.nav.categoryFilter();
-    // const term = this.nav.searchQuery()?.toLowerCase() ?? '';
+    const category = this.categoryFilter();
 
-    // if (category) {
-    //   list = list.filter((product) => product.product_category.some((link) => link.category.name === category));
-    // }
-    // if (term) {
-    //   list = list.filter((product) => product.name.toLowerCase().includes(term));
-    // }
+    if (category) {
+      list = list.filter((product) => product.product_category.some((link) => link.category.name === category));
+    }
 
     const sort = this.sortBy();
     if (sort === 'price-asc') {
@@ -75,7 +72,7 @@ export class ProductList {
   }
 
   toggleCategory(categoryName: string): void {
-    // this.nav.categoryFilter.update((current) => (current === categoryName ? null : categoryName));
+    this.categoryFilter.update((current) => (current === categoryName ? null : categoryName));
   }
 
   onSortChange(value: string): void {

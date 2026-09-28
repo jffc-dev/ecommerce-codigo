@@ -18,14 +18,14 @@ export class Button {
 
   protected readonly classes = computed(() => {
     const base =
-      'inline-flex items-center justify-center gap-sm rounded-full font-medium text-button transition-transform duration-150 active:scale-[0.5] active:opacity-50 disabled:opacity-40 disabled:pointer-events-none';
+      'inline-flex items-center justify-center gap-sm rounded-full font-medium text-button transition-all duration-200 ease-out motion-safe:active:scale-[0.97] disabled:opacity-40 disabled:pointer-events-none';
     const sizing = this.variant() === 'outline-on-image' ? 'px-xl py-md' : 'px-xxl py-lg h-12';
     const palette =
       this.variant() === 'primary'
-        ? 'bg-ink text-on-primary'
+        ? 'bg-ink text-on-primary hover:bg-charcoal hover:shadow-lg hover:shadow-ink/20'
         : this.variant() === 'secondary'
-          ? 'bg-soft-cloud text-ink'
-          : 'bg-canvas text-ink';
+          ? 'bg-soft-cloud text-ink hover:bg-hairline-soft'
+          : 'bg-canvas text-ink hover:bg-soft-cloud';
     const width = this.fullWidth() ? 'w-full' : '';
     return `${base} ${sizing} ${palette} ${width}`;
   });

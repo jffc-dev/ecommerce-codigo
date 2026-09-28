@@ -33,6 +33,7 @@
           @for (category of categories(); track category.id) {
             <app-filter-chip
               [label]="category.name"
+              [active]="categoryFilter() === category.name"
               (activeChange)="toggleCategory(category.name)"
             />
           }

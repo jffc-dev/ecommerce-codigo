@@ -1,7 +1,7 @@
 <div class="inline-flex items-center gap-lg rounded-full bg-soft-cloud px-md py-sm">
   <button
     type="button"
-    class="flex h-6 w-6 items-center justify-center text-heading-md disabled:opacity-30"
+    class="flex h-6 w-6 items-center justify-center rounded-full text-heading-md transition-colors hover:bg-hairline-soft disabled:opacity-30 disabled:hover:bg-transparent"
     [disabled]="value() <= min()"
     (click)="decrement()"
     aria-label="Disminuir cantidad"
@@ -11,7 +11,7 @@
   <span class="w-4 text-center text-button font-medium">{{ value() }}</span>
   <button
     type="button"
-    class="flex h-6 w-6 items-center justify-center text-heading-md disabled:opacity-30"
+    class="flex h-6 w-6 items-center justify-center rounded-full text-heading-md transition-colors hover:bg-hairline-soft disabled:opacity-30 disabled:hover:bg-transparent"
     [disabled]="value() >= max()"
     (click)="increment()"
     aria-label="Aumentar cantidad"

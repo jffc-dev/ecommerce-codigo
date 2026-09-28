@@ -1,8 +1,8 @@
 <button
   type="button"
   [attr.aria-label]="ariaLabel()"
-  [ngClass]="transparent() ? 'bg-transparent' : 'bg-soft-cloud'"
-  class="inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-transform active:scale-90"
+  [ngClass]="transparent() ? 'bg-transparent hover:bg-soft-cloud' : 'bg-soft-cloud hover:bg-hairline-soft'"
+  class="inline-flex h-10 w-10 items-center justify-center rounded-full text-ink transition-all duration-200 motion-safe:active:scale-90"
   (click)="pressed.emit()"
 >
   <ng-content />
