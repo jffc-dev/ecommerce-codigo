@@ -34,4 +34,8 @@ export class Cart {
   goToProducts(){
     this.router.navigate(['product-list'])
   }
+
+  goToCheckout(){
+    this.router.navigate(['checkout'])
+  }
 }

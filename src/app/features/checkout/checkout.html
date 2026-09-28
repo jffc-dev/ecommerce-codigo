@@ -1,0 +1,164 @@
+<div class="px-lg py-xl md:px-xl">
+  @if (orderId(); as id) {
+    <!-- CONFIRMACIÓN -->
+    <div class="mx-auto flex max-w-lg flex-col items-center gap-lg py-section-mobile text-center">
+      <span class="flex h-16 w-16 items-center justify-center rounded-full bg-success text-on-primary">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+      <h1 class="text-heading-xl font-medium">¡Pedido recibido!</h1>
+      <p class="text-body text-mute">
+        Tu pedido quedó registrado y está <span class="font-medium text-ink">pendiente de pago</span>.
+        Te enviaremos las instrucciones a tu correo.
+      </p>
+      <p class="text-caption text-mute">
+        N.º de pedido: <span class="font-medium text-ink">{{ id.slice(0, 8).toUpperCase() }}</span>
+      </p>
+      <button
+        type="button"
+        class="mt-md inline-flex h-12 items-center justify-center rounded-full bg-ink px-xxl text-button text-on-primary transition-all hover:bg-charcoal motion-safe:active:scale-[0.97]"
+        (click)="goToProducts()"
+      >
+        Seguir Comprando
+      </button>
+    </div>
+  } @else {
+    <button type="button" class="text-caption text-mute hover:text-ink" (click)="backToCart()">← Volver a la bolsa</button>
+    <h1 class="mt-sm text-heading-xl font-medium">Checkout</h1>
+
+    <div class="mt-xl grid grid-cols-1 gap-xxl md:grid-cols-3">
+      <!-- FORMULARIO -->
+      <form id="checkout-form" class="flex flex-col gap-lg md:col-span-2" [formGroup]="form" (ngSubmit)="submit()">
+        <h2 class="text-heading-md font-medium">Contacto</h2>
+
+        <div class="grid grid-cols-1 gap-lg md:grid-cols-2">
+          <div class="flex flex-col gap-xs">
+            <label for="checkout-email" class="text-caption text-mute">Correo Electrónico</label>
+            <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+              <input id="checkout-email" type="email" formControlName="email" autocomplete="email" placeholder="tu@correo.com"
+                class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute" />
+            </div>
+            @if (form.controls.email.invalid && form.controls.email.touched) {
+              <span class="text-caption-sm text-sale">Ingresa un correo electrónico válido.</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-xs">
+            <label for="checkout-phone" class="text-caption text-mute">Teléfono (opcional)</label>
+            <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+              <input id="checkout-phone" type="tel" formControlName="phone" autocomplete="tel" placeholder="999 999 999"
+                class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute" />
+            </div>
+            @if (form.controls.phone.invalid && form.controls.phone.touched) {
+              <span class="text-caption-sm text-sale">Ingresa un teléfono válido.</span>
+            }
+          </div>
+        </div>
+
+        <h2 class="mt-md text-heading-md font-medium">Envío</h2>
+
+        <div class="flex flex-col gap-xs">
+          <label for="checkout-name" class="text-caption text-mute">Nombre Completo</label>
+          <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+            <input id="checkout-name" type="text" formControlName="name" autocomplete="name" placeholder="Nombre y apellido"
+              class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute" />
+          </div>
+          @if (form.controls.name.invalid && form.controls.name.touched) {
+            <span class="text-caption-sm text-sale">Ingresa tu nombre.</span>
+          }
+        </div>
+
+        <div class="grid grid-cols-1 gap-lg md:grid-cols-3">
+          <div class="flex flex-col gap-xs md:col-span-2">
+            <label for="checkout-address" class="text-caption text-mute">Dirección</label>
+            <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+              <input id="checkout-address" type="text" formControlName="address" autocomplete="street-address" placeholder="Calle, número, dpto."
+                class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute" />
+            </div>
+            @if (form.controls.address.invalid && form.controls.address.touched) {
+              <span class="text-caption-sm text-sale">Ingresa tu dirección.</span>
+            }
+          </div>
+
+          <div class="flex flex-col gap-xs">
+            <label for="checkout-city" class="text-caption text-mute">Ciudad</label>
+            <div class="field-halo flex h-12 items-center rounded-md border border-transparent bg-soft-cloud px-lg transition-colors">
+              <input id="checkout-city" type="text" formControlName="city" autocomplete="address-level2" placeholder="Lima"
+                class="w-full bg-transparent text-body text-ink outline-none placeholder:text-mute" />
+            </div>
+            @if (form.controls.city.invalid && form.controls.city.touched) {
+              <span class="text-caption-sm text-sale">Ingresa tu ciudad.</span>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-xs">
+          <label for="checkout-notes" class="text-caption text-mute">Referencia / Notas (opcional)</label>
+          <div class="field-halo flex items-center rounded-md border border-transparent bg-soft-cloud px-lg py-md transition-colors">
+            <textarea id="checkout-notes" formControlName="notes" rows="2" placeholder="Ej. frente al parque"
+              class="w-full resize-none bg-transparent text-body text-ink outline-none placeholder:text-mute"></textarea>
+          </div>
+        </div>
+      </form>
+
+      <!-- RESUMEN -->
+      <div class="h-fit bg-soft-cloud p-xl">
+        <h2 class="text-heading-md font-medium">Tu Pedido</h2>
+
+        <div class="mt-lg flex flex-col gap-md">
+          @for (item of cart.cartItems(); track item.variant.id) {
+            <div class="flex gap-md">
+              <div class="relative flex h-16 w-16 flex-none items-center justify-center bg-canvas">
+                @if (lineImage(item); as src) {
+                  <img [src]="src" [alt]="item.product.name" class="h-[80%] w-[80%] object-contain" />
+                }
+                <span class="absolute -right-xs -top-xs flex h-5 min-w-5 items-center justify-center rounded-full bg-ink px-xs text-caption-sm text-on-primary">
+                  {{ item.quantity }}
+                </span>
+              </div>
+              <div class="flex flex-1 justify-between gap-sm">
+                <div>
+                  <p class="line-clamp-1 text-caption font-medium">{{ item.product.name }}</p>
+                  <p class="text-caption-sm text-mute">{{ lineOptions(item) }}</p>
+                </div>
+                <span class="text-caption font-medium">
+                  {{ variantPrice(item.product, item.variant) * item.quantity | currency }}
+                </span>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="mt-lg flex flex-col gap-sm border-t border-hairline pt-lg text-body">
+          <div class="flex justify-between">
+            <span class="text-mute">Subtotal</span>
+            <span>{{ cart.subtotal() | currency }}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-mute">Envío</span>
+            <span>{{ cart.shipping() === 0 ? 'Gratis' : (cart.shipping() | currency) }}</span>
+          </div>
+          <hr class="my-sm border-hairline" />
+          <div class="flex justify-between text-body-strong font-medium">
+            <span>Total</span>
+            <span>{{ cart.total() | currency }}</span>
+          </div>
+        </div>
+
+        @if (submitError()) {
+          <p class="mt-lg text-caption text-sale">{{ submitError() }}</p>
+        }
+
+        <button
+          type="submit"
+          form="checkout-form"
+          [disabled]="submitting()"
+          class="mt-xl inline-flex h-12 w-full items-center justify-center rounded-full bg-ink text-button text-on-primary transition-all hover:bg-charcoal hover:shadow-lg hover:shadow-ink/20 motion-safe:active:scale-[0.97] disabled:opacity-40"
+        >
+          {{ submitting() ? 'Procesando…' : 'Confirmar Pedido' }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

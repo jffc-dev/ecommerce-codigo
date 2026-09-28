@@ -69,7 +69,11 @@
             <span>{{ cart.total() | currency }}</span>
           </div>
         </div>
-        <button type="button" class="mt-xl w-full rounded-full bg-ink px-xl py-md text-button text-on-primary">
+        <button
+          type="button"
+          class="mt-xl w-full rounded-full bg-ink px-xl py-md text-button text-on-primary transition-all hover:bg-charcoal hover:shadow-lg hover:shadow-ink/20 motion-safe:active:scale-[0.97]"
+          (click)="goToCheckout()"
+        >
           Pagar
         </button>
       </div>

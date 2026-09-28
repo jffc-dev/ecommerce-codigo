@@ -12,6 +12,7 @@ export const routes: Route[] = [
   {path: 'product-list', canMatch: [authGuard] ,loadComponent: () => import('./features/product-list/product-list').then(n => n.ProductList)},
 
   {path: 'cart', canActivate: [authGuard] ,component: Cart},
+  {path: 'checkout', canMatch: [authGuard], loadComponent: () => import('./features/checkout/checkout').then(n => n.Checkout)},
 
 
   {path: 'product-detail/:id', loadComponent: () => import('./features/product-detail/product-detail').then(n => n.ProductDetail)},
