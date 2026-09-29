@@ -1,0 +1,6 @@
+project_id = "cdpmpetuwgsjwkpayfpg"
+
+# La app llama a la función con la llave sb_publishable_..., que no es un JWT,
+# así que el gateway no debe exigir uno. La función valida el pedido por su cuenta.
+[functions.culqi-charge]
+verify_jwt = false

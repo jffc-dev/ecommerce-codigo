@@ -7,10 +7,10 @@
           <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </span>
-      <h1 class="text-heading-xl font-medium">¡Pedido recibido!</h1>
+      <h1 class="text-heading-xl font-medium">¡Pago confirmado!</h1>
       <p class="text-body text-mute">
-        Tu pedido quedó registrado y está <span class="font-medium text-ink">pendiente de pago</span>.
-        Te enviaremos las instrucciones a tu correo.
+        Recibimos tu pago y tu pedido está <span class="font-medium text-ink">en preparación</span>.
+        Te enviaremos los detalles a tu correo.
       </p>
       <p class="text-caption text-mute">
         N.º de pedido: <span class="font-medium text-ink">{{ id.slice(0, 8).toUpperCase() }}</span>
@@ -165,8 +165,9 @@
           [disabled]="submitting()"
           class="mt-xl inline-flex h-12 w-full items-center justify-center rounded-full bg-ink text-button text-on-primary transition-all hover:bg-charcoal hover:shadow-lg hover:shadow-ink/20 motion-safe:active:scale-[0.97] disabled:opacity-40"
         >
-          {{ submitting() ? 'Procesando…' : 'Confirmar Pedido' }}
+          {{ submitting() ? 'Procesando…' : 'Pagar ' + (cart.total() | currency) }}
         </button>
+        <p class="mt-sm text-center text-caption-sm text-mute">Pago seguro con tarjeta o Yape vía Culqi</p>
       </div>
     </div>
   }
