@@ -1,1 +1,45 @@
-<p>access-denied works!</p>
+<section
+  class="relative flex min-h-[calc(100vh-56px)] items-center justify-center overflow-hidden bg-ink bg-cover bg-center px-lg py-section-mobile md:min-h-[calc(100vh-100px)] md:py-section"
+  style="background-image: linear-gradient(0deg, rgba(17,17,17,.85), rgba(17,17,17,.55)), url('https://images.unsplash.com/photo-1552346154-21d32810aba3?w=1600&q=80')"
+>
+  <div class="flex max-w-[36rem] flex-col items-center text-center text-on-primary">
+    <span class="flex h-16 w-16 items-center justify-center rounded-full bg-canvas/10 ring-1 ring-canvas/30 backdrop-blur-sm">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <rect x="5" y="11" width="14" height="10" rx="2" />
+        <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke-linecap="round" />
+      </svg>
+    </span>
+
+    <p class="mt-xl text-caption-sm font-medium uppercase tracking-[0.2em] text-stone">Error 403</p>
+    <h1 class="mt-sm font-display text-display-mobile uppercase md:text-display-tablet">Solo para Miembros</h1>
+    <p class="mt-lg text-body text-hairline">
+      Necesitas iniciar sesión para ver esta sección. Únete gratis y accede a los productos, tu bolsa y el historial de
+      tus compras.
+    </p>
+
+    <div class="mt-xxl flex w-full flex-col gap-md sm:w-auto sm:flex-row">
+      <button
+        type="button"
+        class="inline-flex h-12 items-center justify-center rounded-full bg-canvas px-xxl text-button font-medium text-ink transition-all hover:bg-soft-cloud hover:shadow-lg hover:shadow-canvas/20 motion-safe:active:scale-[0.97]"
+        (click)="goToLogin()"
+      >
+        Iniciar Sesión
+      </button>
+      <button
+        type="button"
+        class="inline-flex h-12 items-center justify-center rounded-full px-xxl text-button font-medium text-on-primary ring-1 ring-canvas/60 transition-all hover:bg-canvas/10 hover:ring-canvas motion-safe:active:scale-[0.97]"
+        (click)="goToRegister()"
+      >
+        Crear Cuenta
+      </button>
+    </div>
+
+    <button
+      type="button"
+      class="mt-xl text-caption text-stone underline-offset-4 transition-colors hover:text-on-primary hover:underline"
+      (click)="goToHome()"
+    >
+      ← Volver al inicio
+    </button>
+  </div>
+</section>
